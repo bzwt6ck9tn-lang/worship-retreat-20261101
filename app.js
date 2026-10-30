@@ -1,4 +1,4 @@
-/* 敬拜部職員退修 2026.11.01｜審閱試用：答案只存本裝置 localStorage */
+/* 敬拜部職員退修 2026.11.01｜答案只存本裝置 localStorage */
 (function () {
   "use strict";
 
@@ -79,6 +79,14 @@
         a.classList.toggle("active", i === idx);
         if (i === idx) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current");
       });
+      /* Keep active chip visible in horizontal scroll */
+      if (links[idx] && nav) {
+        var chip = links[idx];
+        var left = chip.offsetLeft - 24;
+        var right = chip.offsetLeft + chip.offsetWidth + 24;
+        if (left < nav.scrollLeft) nav.scrollLeft = left;
+        else if (right > nav.scrollLeft + nav.clientWidth) nav.scrollLeft = right - nav.clientWidth;
+      }
     }
     var ticking = false;
     window.addEventListener("scroll", function () {
