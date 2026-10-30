@@ -17,7 +17,7 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
   --spine-w: 42px;
-  --nav-h: 0px;
+  --nav-h: 3.1rem;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -25,7 +25,7 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
-  scroll-padding-top: calc(1rem + var(--safe-top));
+  scroll-padding-top: calc(var(--nav-h) + 0.5rem + var(--safe-top));
 }
 
 body {
@@ -132,33 +132,48 @@ a { color: var(--accent-deep); }
   letter-spacing: 0.08em;
 }
 
-/* —— Soft nav chips with left accent bar —— */
+/* —— Sticky horizontal scrollable nav chips —— */
 .nav-chips {
+  position: sticky;
+  top: 0;
+  z-index: 70;
   display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 0.4rem 1.35rem 1rem;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0.4rem;
+  max-width: none;
+  margin: 0;
+  padding: 0.55rem 1.35rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  background: rgba(246, 240, 232, 0.96);
+  border-bottom: 1px solid var(--rule);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
+.nav-chips::-webkit-scrollbar { display: none; }
 .nav-chips a {
-  display: block;
+  flex: 0 0 auto;
+  display: inline-block;
   text-decoration: none;
   font-family: var(--serif);
-  font-size: 0.92rem;
+  font-size: 0.82rem;
   font-weight: 500;
   letter-spacing: 0.06em;
   color: var(--ink-soft);
-  padding: 0.55rem 0.85rem;
+  padding: 0.4rem 0.75rem;
   background: var(--paper-soft);
-  border-left: 3px solid var(--accent);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
 }
 .nav-chips a.active {
-  color: var(--ink);
+  color: var(--spine-text);
   font-weight: 600;
-  border-left-color: var(--spine);
-  background: #e8ddd0;
+  background: var(--spine);
+  border-color: var(--spine);
 }
 .nav-chips a:focus-visible {
   outline: 1px dotted var(--accent-deep);
@@ -173,7 +188,7 @@ main {
 }
 
 .section {
-  scroll-margin-top: calc(0.75rem + var(--safe-top));
+  scroll-margin-top: calc(var(--nav-h) + 0.5rem + var(--safe-top));
   margin: 0 0 2.2rem;
 }
 .section-title {
@@ -330,6 +345,54 @@ main {
   color: var(--ink-soft);
   background: var(--paper-soft);
   border-left: 3px solid var(--accent);
+}
+
+/* —— Quiet self-read hint —— */
+.read-hint {
+  margin: -0.45rem 0 0.75rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+
+/* —— YouTube under lyrics —— */
+.yt-link {
+  margin: 0.75rem 0 0;
+}
+.yt-link a {
+  display: inline-block;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--accent-deep);
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  -webkit-tap-highlight-color: transparent;
+}
+.yt-link a:hover,
+.yt-link a:focus-visible {
+  color: var(--spine-text);
+  background: var(--accent);
+  border-color: var(--accent);
+  outline: none;
+}
+
+/* —— Back to index —— */
+.back-index {
+  margin: 1.1rem 0 0;
+  text-align: right;
+}
+.back-index a {
+  text-decoration: none;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.back-index a:hover,
+.back-index a:focus-visible {
+  color: var(--accent-deep);
 }
 
 /* —— Scripture —— */
@@ -531,6 +594,7 @@ footer.app-footer .ccli {
   .spine {
     position: sticky;
     top: 0;
+    z-index: 85;
     width: 100%;
     height: auto;
     flex: 0 0 auto;
@@ -541,6 +605,10 @@ footer.app-footer .ccli {
     padding: calc(0.55rem + var(--safe-top)) 1rem 0.55rem;
     justify-content: center;
   }
+  .nav-chips {
+    /* sit below the collapsed horizontal spine bar */
+    top: calc(2.2rem + var(--safe-top));
+  }
   .action-bar { left: 0; }
   .toast { left: 50%; }
 }
@@ -548,7 +616,11 @@ footer.app-footer .ccli {
 @media (min-width: 640px) {
   .app-title { font-size: 1.85rem; }
   .app-header { padding-left: 1.75rem; padding-right: 1.75rem; }
-  .nav-chips, main, footer.app-footer {
+  .nav-chips {
+    padding-left: 1.75rem;
+    padding-right: 1.75rem;
+  }
+  main, footer.app-footer {
     padding-left: 1.75rem;
     padding-right: 1.75rem;
   }
