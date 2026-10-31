@@ -17,7 +17,7 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
   --spine-w: 42px;
-  --nav-h: 3.1rem;
+  --nav-h: 4.5rem;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -25,7 +25,7 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
-  scroll-padding-top: calc(var(--nav-h) + 0.5rem + var(--safe-top));
+  scroll-padding-top: calc(var(--nav-h) + 0.75rem + var(--safe-top));
 }
 
 body {
@@ -79,6 +79,7 @@ a { color: var(--accent-deep); }
 
 /* —— Cover header —— */
 .app-header {
+  scroll-margin-top: 0;
   padding: calc(1.8rem + var(--safe-top)) 1.35rem 1.2rem;
   text-align: left;
 }
@@ -188,7 +189,7 @@ main {
 }
 
 .section {
-  scroll-margin-top: calc(var(--nav-h) + 0.5rem + var(--safe-top));
+  scroll-margin-top: calc(var(--nav-h) + 0.75rem + var(--safe-top));
   margin: 0 0 2.2rem;
 }
 .section-title {

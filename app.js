@@ -68,12 +68,60 @@
 
   function initNavSpy() {
     var links = Array.prototype.slice.call(document.querySelectorAll(".nav-chips a[href^='#']"));
-    var heads = links.map(function (a) { return document.querySelector(a.getAttribute("href")); });
+    var heads = links.map(function (a) {
+      var id = (a.getAttribute("href") || "").replace(/^#/, "");
+      return id ? document.getElementById(id) : null;
+    });
     var nav = document.querySelector(".nav-chips");
+    var jumpLockUntil = 0;
+
+    function navHeight() {
+      return nav ? nav.getBoundingClientRect().height : 0;
+    }
+
+    function syncNavVar() {
+      var h = navHeight();
+      if (h > 0) document.documentElement.style.setProperty("--nav-h", h + "px");
+    }
+
+    function scrollToTarget(el, id) {
+      if (!el) return;
+      syncNavVar();
+      var top;
+      if (id === "cover") {
+        top = 0;
+      } else {
+        top = el.getBoundingClientRect().top + window.pageYOffset - navHeight() - 10;
+      }
+      jumpLockUntil = Date.now() + 700;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      try { history.replaceState(null, "", "#" + id); } catch (e) { /* ignore */ }
+    }
+
+    links.forEach(function (a, i) {
+      a.addEventListener("click", function (e) {
+        var href = a.getAttribute("href") || "";
+        if (href.charAt(0) !== "#") return;
+        var id = href.slice(1);
+        var el = heads[i] || document.getElementById(id);
+        if (!el) return;
+        e.preventDefault();
+        scrollToTarget(el, id);
+        links.forEach(function (x, j) {
+          x.classList.toggle("active", j === i);
+          if (j === i) x.setAttribute("aria-current", "true"); else x.removeAttribute("aria-current");
+        });
+      });
+    });
+
     function update() {
-      var offset = (nav ? nav.getBoundingClientRect().height : 0) + 24;
+      if (Date.now() < jumpLockUntil) return;
+      syncNavVar();
+      var offset = navHeight() + 12;
       var idx = 0;
-      heads.forEach(function (h, i) { if (h && h.getBoundingClientRect().top - offset <= 0) idx = i; });
+      heads.forEach(function (h, i) {
+        if (h && h.getBoundingClientRect().top - offset <= 0) idx = i;
+      });
       if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) idx = heads.length - 1;
       links.forEach(function (a, i) {
         a.classList.toggle("active", i === idx);
@@ -94,7 +142,8 @@
       ticking = true;
       requestAnimationFrame(function () { ticking = false; update(); });
     }, { passive: true });
-    window.addEventListener("resize", update);
+    window.addEventListener("resize", function () { syncNavVar(); update(); });
+    syncNavVar();
     update();
   }
 
