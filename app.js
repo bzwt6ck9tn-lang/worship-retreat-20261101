@@ -143,6 +143,19 @@
       requestAnimationFrame(function () { ticking = false; update(); });
     }, { passive: true });
     window.addEventListener("resize", function () { syncNavVar(); update(); });
+    /* Rundown items jump with same sticky offset */
+    Array.prototype.slice.call(document.querySelectorAll(".rundown-list a[href^='#']")).forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        var href = a.getAttribute("href") || "";
+        if (href.charAt(0) !== "#") return;
+        var id = href.slice(1);
+        var el = document.getElementById(id);
+        if (!el) return;
+        e.preventDefault();
+        scrollToTarget(el, id);
+      });
+    });
+
     syncNavVar();
     update();
   }
