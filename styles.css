@@ -698,3 +698,35 @@ footer.app-footer .ccli {
 .song {
   scroll-margin-top: calc(var(--nav-h) + 0.75rem + var(--safe-top));
 }
+
+
+/* —— Scripture tap highlight —— */
+.hl-tip {
+  margin: -0.35rem 0 0.65rem;
+  font-size: 0.76rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+.verse[data-verse] {
+  cursor: pointer;
+  border-radius: 0.35rem;
+  padding: 0.15rem 0.35rem;
+  margin-left: -0.35rem;
+  margin-right: -0.15rem;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.verse[data-verse]:focus-visible {
+  outline: 1px dotted var(--accent-deep);
+  outline-offset: 2px;
+}
+.verse.is-hl {
+  background: rgba(160, 120, 88, 0.22);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+::selection {
+  background: rgba(160, 120, 88, 0.35);
+}
+.scripture ::selection {
+  background: rgba(160, 120, 88, 0.4);
+}

@@ -6,6 +6,54 @@
   var PREFIX = "worshipRetreat20261101:";
   var STORAGE_KEY = PREFIX + "answers";
 
+  var HL_KEY = PREFIX + "highlights";
+
+  function verseEls() {
+    return Array.prototype.slice.call(document.querySelectorAll(".verse[data-verse]"));
+  }
+
+  function loadHighlights() {
+    try {
+      var raw = localStorage.getItem(HL_KEY);
+      var set = raw ? JSON.parse(raw) : {};
+      verseEls().forEach(function (el) {
+        var on = !!set[el.getAttribute("data-verse")];
+        el.classList.toggle("is-hl", on);
+        el.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+    } catch (e) { console.warn("loadHighlights failed", e); }
+  }
+
+  function saveHighlights() {
+    try {
+      var set = {};
+      verseEls().forEach(function (el) {
+        if (el.classList.contains("is-hl")) set[el.getAttribute("data-verse")] = true;
+      });
+      localStorage.setItem(HL_KEY, JSON.stringify(set));
+    } catch (e) { /* ignore */ }
+  }
+
+  function toggleVerse(el) {
+    var on = !el.classList.contains("is-hl");
+    el.classList.toggle("is-hl", on);
+    el.setAttribute("aria-pressed", on ? "true" : "false");
+    saveHighlights();
+  }
+
+  function initVerseHighlight() {
+    verseEls().forEach(function (el) {
+      el.addEventListener("click", function () { toggleVerse(el); });
+      el.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          toggleVerse(el);
+        }
+      });
+    });
+    loadHighlights();
+  }
+
   function $(id) { return document.getElementById(id); }
 
   function fieldEls() {
@@ -63,6 +111,11 @@
     if (!confirm("確定清除本裝置上這頁的全部答案？")) return;
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
     fieldEls().forEach(function (el) { el.value = ""; });
+    try { localStorage.removeItem(HL_KEY); } catch (e) { /* ignore */ }
+    verseEls().forEach(function (el) {
+      el.classList.remove("is-hl");
+      el.setAttribute("aria-pressed", "false");
+    });
     showToast("已清除");
   }
 
@@ -162,6 +215,7 @@
 
   function init() {
     loadAnswers();
+    initVerseHighlight();
     initNavSpy();
 
     var saveBtn = $("btn-save"), clearBtn = $("btn-clear");
