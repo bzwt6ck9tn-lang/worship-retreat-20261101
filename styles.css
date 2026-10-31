@@ -647,8 +647,12 @@ footer.app-footer .ccli {
 .pray-table th,
 .pray-table td {
   border: 1px solid var(--line, #d9cfc3);
-  padding: 0.45rem 0.5rem;
+  padding: 0.85rem 0.7rem;
+  min-height: 2.8rem;
   vertical-align: middle;
+}
+.pray-table td {
+  height: 3.2rem;
 }
 .pray-table th {
   background: rgba(92, 70, 54, 0.08);
@@ -668,7 +672,8 @@ footer.app-footer .ccli {
   background: transparent;
   font: inherit;
   color: inherit;
-  padding: 0.15rem 0;
+  padding: 0.35rem 0;
+  min-height: 2.2rem;
   outline: none;
 }
 .pray-table input::placeholder {
